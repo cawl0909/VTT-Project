@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel = "stylesheet" href="/loginpage/CSS/login.css" type="text/css"/>
+</head>
+<body>
+    <div id = "login_wrapper">
+        <div id="login_label" class="font_styles">LOGIN</div>
+        <div id = "form_wrapper" class="font_styles">
+            <span class="text_input_label">Username</span>
+            <input id="username" class="text_input font_styles" type="text" placeholder="Enter Username">
+            <span class="text_input_label">Password</span>
+            <input id = "password" class="text_input font_styles" type="password" placeholder="Enter Password">
+            <label>Show Password</label>
+            <input type="checkbox" id = "switch_visible">
+            <a href="http:localhost:3000/signup" style="color: rgb(51, 155, 155);">Don't have an account?</a>
+            <input id = "submit_form" class="text_input font_styles" type="button" value="Submit">
+            <span id="errlog"></span>
+        </div>
+    </div>
+    <script src="/loginpage/JS/login.js"></script>
+</body>
+</html>

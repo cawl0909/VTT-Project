@@ -1,0 +1,125 @@
+#tool-panel{
+    box-shadow: 2px 2px 3px #484848;
+    margin: 0px;
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    position: fixed;
+    top: 55px;
+    right: 370px;
+    border: 2px solid black;
+    background-color: #808080;
+    user-select: none;
+}
+.elem{
+    width: 40px;
+    height: 40px;
+    border-bottom: 1px solid black;
+}
+.elemI{
+    opacity: 0.5;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.elemI:hover{
+    background-color: #606060;
+    opacity: 1; 
+}
+.elemI2{
+    background-color: #606060;
+    opacity: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+#color_picker_width{
+    border: 2px solid black;
+    box-shadow: 2px 2px 3px #484848;
+    padding: 5px;
+    background-color: #808080;
+    top: 10px;
+    right: 370px;
+    display: flex;
+    flex-direction: row;
+    position: fixed;
+    z-index: 100;
+    visibility: hidden;
+}
+#draw_sub_list{
+    border: 2px solid black;
+    box-shadow: 2px 2px 3px #484848;
+    right: 50px;
+    top: 0px;
+    background-color: #808080;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    z-index: 100;
+    visibility: hidden;
+    padding: 2px;
+}
+.draw_sub_list_class{
+    padding-top: 2px;
+    padding-bottom: 2px;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    white-space: nowrap;
+    display: flex;
+    flex-direction: row;
+    opacity: 0.5;
+    object-fit: contain;
+    font-size: 13px;
+    font-weight: bold;
+    font-family: Sans-serif;
+    align-items: center;
+    padding-right: 5px;
+}
+.draw_sub_list_class:hover{
+    background-color: #606060;
+    opacity: 1; 
+}.draw_sub_list_class_2{
+    padding-top: 2px;
+    padding-bottom: 2px;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    white-space: nowrap;
+    display: flex;
+    flex-direction: row;
+    opacity: 0.5;
+    object-fit: contain;
+    font-size: 13px;
+    font-weight: bold;
+    font-family: Sans-serif;
+    align-items: center;
+    padding-right: 5px;
+    background-color: #606060;
+    opacity: 1; 
+}
+.draw_list_img{
+    width: 30px;
+    height: 30px;
+    padding-right: 25px;
+    pointer-events: none;
+}
+#trans{
+    display: flex;
+    align-items: center;
+    padding: 5px;   font-size: 13px;
+    font-weight: bold;
+    font-family: Sans-serif;
+    align-items: center;
+}
+#radio_trans:active{
+    color: black;
+}
+#radio_trans{
+    accent-color: black;
+}
+/*text area input */
+#input_box_textarea{
+    display: none;
+    background-color: #484848;
+    color: whitesmoke;
+}

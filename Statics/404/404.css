@@ -1,0 +1,9 @@
+#mid{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+body{
+    margin: 0px;
+}

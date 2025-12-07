@@ -1,0 +1,207 @@
+
+#Right-Box-Wrapper{
+    z-index: 1000;
+    display: flex;
+    position: fixed;
+    min-width: 336px;
+    width: 336px;
+    height: 100vh !important;
+    right: 0px;
+    top: 0px;
+    border: 4px solid black;
+    background-color: #484848;
+    flex-direction: column;
+    box-sizing: border-box;
+    
+}
+#Input-Wrapper{
+    display: flex;
+    justify-content: center;
+    height: 100%;
+}
+#mwrap{
+    width: 100%;
+    height: 95%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    
+}
+#switch_menu{
+    height: 30px;
+    display: flex;
+    flex-direction: row;
+    box-sizing:border-box;
+
+}
+.switch_but{
+    height: 30px;
+    width: 50%;
+    background-size: cover;
+    border: 3px solid black;
+}
+.switch_but:hover{
+    background-color: #747474;
+}
+#image_menu_button{
+    background-image: url(/VTT/images/60817.png);
+    background-size:contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    box-sizing: border-box
+
+}
+#img_submenu{
+    display: none;
+    height: 100%;
+    margin: 5px;
+    font-family: sans-serif;
+    color: whitesmoke;
+    box-sizing: border-box;
+}
+#home_button{
+    background-image: url(/VTT/images/17840-200.png);
+    background-size:contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    box-sizing: border-box
+}
+#image_list{
+    height: calc(100% - 100px);
+    border: 3px solid black;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    box-sizing: border-box;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+}
+#image_list::-webkit-scrollbar{
+    width: 5px;
+}
+#image_list::-webkit-scrollbar-thumb{
+    background: black;
+    border-radius: 5px;
+}
+#image_list::-webkit-scrollbar-track{
+    background: rgb(85, 85, 85);
+}
+.image_list_element{
+    display: flex;
+    align-items: center;
+    border: 1px  solid black;
+    margin: 3px;
+    height: 50px;
+    user-select: none;
+}
+.image_list_element:hover{
+    color: rgb(0, 204, 255);
+    background-color: #747474;
+}
+.image_list_element_image{
+    object-fit: contain;
+    width: 50px;
+    height: 50px;
+    pointer-events: none;
+}
+.image_list_element_text{
+    overflow: hidden;
+    margin-left: 5px;
+    pointer-events: none;
+}
+#message-wrapper::-webkit-scrollbar{
+    width: 5px;
+}
+#message-wrapper::-webkit-scrollbar-thumb{
+    background: black;
+}
+#message-wrapper::-webkit-scrollbar-track{
+    background: rgb(85, 85, 85);
+}
+#message-wrapper{
+    z-index: 50;
+    height: 85%;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #333333;
+    border: 3px solid black; 
+    overflow: auto;
+    overflow-wrap: break-word;
+    box-sizing:border-box;
+}
+#a{
+    position: fixed;
+    height: 100%;
+    width: 10px;
+    background-color: #262626;
+    top: 0px;
+    right: 0px;
+}
+#inpbox{
+    background-color: #333333;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+    color: whitesmoke;
+    border: 3px black solid;
+    font-family: sans-serif;
+    font-size: 13px;
+    resize: none;
+    
+}
+#inpbox::-webkit-scrollbar{
+    width: 5px;
+}
+#inpbox::-webkit-scrollbar-thumb{
+    background: black;
+    border-radius: 5px;
+}
+#inpbox::-webkit-scrollbar-track{
+    background: rgb(85, 85, 85);
+}
+#inpbox:focus{
+    outline: none;
+}
+#Chat-Wrapper{
+    z-index: 50;
+    height: 110px;
+}
+.Inputs{
+    color: whitesmoke;
+    padding-top: 8px;
+    padding-bottom:8px;
+    padding-right: 3px;
+    padding-left: 3px;
+    border-top: black solid 1px;
+    border-bottom: black solid 1px;
+    font-family: sans-serif;
+}
+.server_message{
+    color:red;
+    font-weight: 1000;
+    padding-top: 8px;
+    padding-bottom:8px;
+    padding-right: 3px;
+    padding-left: 3px;
+    border-top: black solid 1px;
+    border-bottom: black solid 1px;
+    font-family: sans-serif;
+}
+.dice_roll{
+    color: whitesmoke;
+    font-weight: 750;
+    padding-top: 8px;
+    padding-bottom:8px;
+    padding-right: 3px;
+    padding-left: 3px;
+    border-top:gold solid 2px;
+    border-bottom: gold solid 2px;
+    font-family: sans-serif;
+}
+body{
+    margin: 0px;
+}
+#screen-wrap{
+    z-index: 1;
+}
