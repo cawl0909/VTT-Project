@@ -1,11 +1,11 @@
 # Velurin — VTT (Virtual Tabletop)
 
-**Quick summary** ✅
+**Quick summary** 
 A lightweight VTT built with Node.js + Express and Socket.io. The server serves static web assets (canvas-based board UI) and handles real-time chat and board synchronization across connected clients.
 
 ---
 
-## Quick start ⚡
+## Quick start Guide
 1. Install dependencies:
 
    ```bash
@@ -24,14 +24,13 @@ A lightweight VTT built with Node.js + Express and Socket.io. The server serves 
 
 ## Real-time contract (socket events) 🔁
 - Client -> Server
-  - `join_room` : request to join a named room (string payload). The client may pass `?room=<name>` in the page URL to pick a room.
   - `csm` : chat message (raw text)
-  - `board_update` : full `render_queue` payload representing board state for the current room
+  - `board_update` : full `render_queue` payload representing board state
   - `request_board` : ask server for current board state (sent on connect)
 - Server -> Client
-  - `scm` : broadcasted chat messages (stringified JSON) (scoped to room)
-  - `server` : control messages (e.g., `toolong`, `roll` results) (scoped to room)
-  - `board_update` : broadcasted full board state (scoped to room)
+  - `scm` : broadcasted chat messages (stringified JSON)
+  - `server` : control messages (e.g., `toolong`, `roll` results)
+  - `board_update` : broadcasted full board state
 
 ## Suggested next improvements 💡
 - Add persistence (e.g., save board to a DB or disk snapshot).
