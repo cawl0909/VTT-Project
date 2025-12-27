@@ -139,6 +139,30 @@
     box-sizing:border-box;
 }
 
+/* Upload panel - non-invasive, keeps the submit button visible */
+.upload-panel{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px;
+}
+.upload-panel label{ margin-left: 4px; white-space: nowrap; }
+.upload-panel input[type="file"]{
+    flex: 1 1 auto; /* allow shrinking when filename is long */
+    min-width: 0;   /* critical for flex children to shrink */
+    max-width: 100%;
+    overflow: hidden;
+}
+.upload-panel input[type="file"]::-webkit-file-upload-button{ cursor: pointer; }
+.upload-panel input[type="button"], .upload-panel .btn{
+    flex: 0 0 88px; /* fixed width for the submit button */
+    width: 88px;
+    white-space: nowrap;
+}
+.upload-panel input[type="file"]::-ms-expand{ display: none; }
+
 #a{
     position: fixed;
     height: 100%;
