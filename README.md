@@ -5,7 +5,7 @@ A lightweight VTT built with Node.js + Express and Socket.io. The server serves 
 
 ---
 
-## Quick start ⚡
+## Quick start Guide
 1. Install dependencies:
 
    ```bash
@@ -21,19 +21,8 @@ A lightweight VTT built with Node.js + Express and Socket.io. The server serves 
 
 > Note: By default the app uses port 3000. To change it, update `server.js` or set your env var (the current code uses `3000` by default).
 
-
-## Real-time contract (socket events) 🔁
-- Client -> Server
-  - `csm` : chat message (raw text)
-  - `board_update` : full `render_queue` payload representing board state
-  - `request_board` : ask server for current board state (sent on connect)
-- Server -> Client
-  - `scm` : broadcasted chat messages (stringified JSON)
-  - `server` : control messages (e.g., `toolong`, `roll` results)
-  - `board_update` : broadcasted full board state
-
-## Suggested next improvements 💡
-- Add persistence (e.g., save board to a DB or disk snapshot).
+## Future Updates 
+- Add persistence (e.g., save board to a DB or disk snapshot), therefore also need a login system.
 - Implement diff-based updates or throttling for freehand/dragging updates.
 - Add authentication/permissions for multi-user control of elements.
 
