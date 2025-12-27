@@ -156,7 +156,8 @@ function remove_element_from_queue(pos){
     var temp_render_queue = render_queue;
     temp_render_queue.splice(pos,1);
     render_queue = temp_render_queue;
-}
+    try{ send_board_update(); }catch(e){}
+} 
 ///// Copy Paste
 var copy_element_store;
 function copy_element(){
@@ -165,7 +166,8 @@ function copy_element(){
     final_copy.id = rand_id;
     render_queue.push(final_copy);
     render();
-}
+    try{ send_board_update(); }catch(e){}
+} 
 //////////////Move up in queue
 function moveToTopQueue(){
     var temp_element = render_queue[queue_pos];
@@ -175,7 +177,8 @@ function moveToTopQueue(){
     render_queue = temp_render_array;
     queue_pos = (temp_render_array.length-1);
     render();
-}
+    try{ send_board_update(); }catch(e){}
+} 
 //////Move bot queue
 function moveToBotQueue(){
     var temp_element = render_queue[queue_pos];
@@ -185,7 +188,8 @@ function moveToBotQueue(){
     render_queue = temp_render_array;
     queue_pos = 0;
     render();
-}
+    try{ send_board_update(); }catch(e){}
+} 
 ///// stretch element
 var select_tr =false;
 var select_east = false;

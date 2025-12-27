@@ -466,7 +466,8 @@ function add_to_render_queue(inputele){
     var rand_id = (Math.floor((Math.random())*100000000000000)); // 14 digit random id
     temp_json_to_add_to_queue.id = rand_id;
     render_queue.push(temp_json_to_add_to_queue);
-}
+    try{ send_board_update(); }catch(e){}
+} 
 ///Create bounding box 
 function create_bounding_box(bbox_input){
     var bbox_x;
