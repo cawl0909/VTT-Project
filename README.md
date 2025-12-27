@@ -1,6 +1,6 @@
 # Velurin — VTT (Virtual Tabletop)
 
-**Quick summary** ✅
+**Quick summary** 
 A lightweight VTT built with Node.js + Express and Socket.io. The server serves static web assets (canvas-based board UI) and handles real-time chat and board synchronization across connected clients.
 
 ---
