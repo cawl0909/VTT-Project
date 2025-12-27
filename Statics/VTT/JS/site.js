@@ -2,7 +2,9 @@ window.addEventListener("onload",(e)=>{
     console.log("Done loading");
 });
 var socket = io(); //creates a connection with a socket on the same IP as the website domain
-socket.on('connect', ()=>{ socket.emit('request_board'); });
+const urlParams = new URLSearchParams(window.location.search);
+const room = urlParams.get('room') || 'main';
+socket.on('connect', ()=>{ socket.emit('join_room', room); socket.emit('request_board'); });
 socket.on('board_update',(data)=>{ if(data != null && typeof render_queue !== 'undefined'){ render_queue = data; try{ render(); }catch(e){} } });
 const inputbox = document.getElementById("inpbox"); //Gets the input text area as a constant
 const mwrap = document.getElementById("message-wrapper"); //Gets the message warpper as a cosntant

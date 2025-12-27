@@ -12,8 +12,10 @@ const internal = require('stream');
 const { isNull } = require('util');
 const { isNumberObject } = require('util/types');
 const io = new Server(server); //creates socket.io server within main server
-var board_state = [];
-const port1 = 3000 || process.env.PORT; // Secifiy a port that the server listens on
+// Per-room board state map (roomName -> render_queue array)
+var board_states = {};
+function getRoom(socket){ return socket.room || 'main'; }
+const port1 = process.env.PORT || 3000; // Specify a port that the server listens on
 const formidable = require('formidable');///formidable package
 const cookie_parser = require("cookie-parser"); ///cookie parser package
 ////////////////////////////////////////////////////////
@@ -105,33 +107,50 @@ io.on('connection', (socket) => { //handles socket communcation with clients
         //connected to the server from the HTTP handshake 
       } catch{
       }
-      io.emit("scm",(JSON.stringify(tempmessage))); //Converts the JSON object into a string and emits to all sockets with scm tag
+      var room = getRoom(socket);
+      io.to(room).emit("scm",(JSON.stringify(tempmessage))); //Converts the JSON object into a string and emits to sockets in the room
       var temparr = commandRunner(msg)  //Checks if msg is command
       try{
         if(temparr == "error-unrec"){ //check if message
           socket.emit("server",{type:(temparr)}); // Generates a random dice roll
         }else if(temparr != "error"){
-          io.emit("server",(temparr));
+          io.to(room).emit("server",(temparr));
         }
       }catch{
       }
       console.log(msg); //outputs the chat message sent to the server to the console.
-      fs.appendFileSync('message_log.txt',("\r\n["+ttime+"]["+curtime.getDate()+"/"+(parseInt(curtime.getMonth())+1).toString()+"/"+curtime.getFullYear()+"]"+["[IP-"+socket_ip+"]"+":-- "+msg]),'utf-8');
+      fs.appendFileSync('message_log.txt', "\r\n[" + ttime + "][" + curtime.getDate() + "/" + (parseInt(curtime.getMonth())+1).toString() + "/" + curtime.getFullYear() + "][ROOM-" + room + "][IP-" + socket_ip + "]: -- " + msg, 'utf-8');
       //above appends the messages tot he message log
 
     }
   });
+  // allow clients to join a named room (default: 'main')
+  socket.on('join_room',(roomName)=>{
+    try{
+      if(!roomName) roomName = 'main';
+      socket.join(roomName);
+      socket.room = roomName;
+      if(!board_states[roomName]) board_states[roomName] = [];
+      // immediately send the room's board state to the joining client
+      socket.emit('board_update', board_states[roomName]);
+      console.log('Socket joined room:', roomName);
+    }catch(e){}
+  });
+
   socket.on('board_update',(msg)=>{
     try{
-      board_state = msg;
-      io.emit('board_update', board_state);
+      var room = getRoom(socket);
+      board_states[room] = msg;
+      io.to(room).emit('board_update', board_states[room]);
     }catch(e){ }
   });
   socket.on('request_board',()=>{
-    socket.emit('board_update', board_state);
+    var room = getRoom(socket);
+    socket.emit('board_update', board_states[room] || []);
   });
-  socket.on('disconnect',(socket)=>{
-    console.log("Disconnect"); //when a connected user leaves the socket it outputs it to the terminal
+  // socket disconnect handler — no socket param is provided by the event callback
+  socket.on('disconnect', ()=>{
+    console.log("Disconnect", getRoom(socket)); //when a connected user leaves the socket it outputs it to the terminal and room
   });
 });
 server.listen(port1,() =>{   //sets the the server listens on the port1 port

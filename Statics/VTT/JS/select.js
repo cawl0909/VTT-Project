@@ -7,6 +7,14 @@ var is_pointer_down = false;
 var queue_pos;
 var start_select_x;
 var start_select_y;
+
+// Multi-select / marquee selection state
+var selected_indices = []; // indices in render_queue
+var is_multi_select = false;
+var multi_select_start_x = 0;
+var multi_select_start_y = 0;
+var multi_select_end_x = 0;
+var multi_select_end_y = 0;
 function select_canvas_element(x,y){
     ghost_canvas.width = canvas.width;
     ghost_canvas.height = canvas.height;
@@ -54,6 +62,12 @@ function select_canvas_element(x,y){
 }
 function reset_ghost_canvas(){
     ghost_ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+function clear_selection(){
+    selected_indices = [];
+    is_selected = false;
+    is_select_move = false;
+    is_multi_select = false;
 }
 function render_as_black(input_element){
     var input_element_dupe = JSON.parse(JSON.stringify(input_element));
@@ -131,6 +145,39 @@ function render_ghost_element_options(ghost_element){
     //console.log("hi");
     ghost_ctx.restore();
 }
+
+// compute bounding box for a set of indices in render_queue (returns {x,y,width,height})
+function compute_group_bbox(indices){
+    if(!indices || indices.length == 0) return null;
+    var minx = Infinity, miny = Infinity, maxx = -Infinity, maxy = -Infinity;
+    for(var i=0;i<indices.length;i++){
+        var el = render_queue[indices[i]];
+        if(!el || !el.bbox) continue;
+        var bx = el.bbox.x;
+        var by = el.bbox.y;
+        var bw = el.bbox.width * (el.scalee || 1);
+        var bh = el.bbox.height * (el.scalen || 1);
+        minx = Math.min(minx, bx);
+        miny = Math.min(miny, by);
+        maxx = Math.max(maxx, bx + bw);
+        maxy = Math.max(maxy, by + bh);
+    }
+    if(minx === Infinity) return null;
+    return {x:minx, y:miny, width: (maxx-minx), height: (maxy-miny)};
+}
+
+function render_group_bbox(indices){
+    var bbox = compute_group_bbox(indices);
+    if(!bbox) return;
+    ghost_ctx.save();
+    var scale = grid_scale/init_scale;
+    ghost_ctx.setLineDash([6,4]);
+    ghost_ctx.strokeStyle = '#00ccff';
+    ghost_ctx.lineWidth = 2 * scale;
+    ghost_ctx.strokeRect(bbox.x*scale, bbox.y*scale, bbox.width*scale, bbox.height*scale);
+    ghost_ctx.setLineDash([]);
+    ghost_ctx.restore();
+}
 ///////
 function render_ghost_img(imginp,tempctx){
     tempctx.save();
@@ -147,8 +194,7 @@ function render_ghost_img(imginp,tempctx){
 var selected_rotate = false;
 ////reset_select
 function reset_selection(){
-    is_selected = false;
-    is_select_move = false;
+    clear_selection();
     render();
 }
 //delete

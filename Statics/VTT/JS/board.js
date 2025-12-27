@@ -43,8 +43,35 @@ function no_longer_down(e){
         canvas.style.cursor = "auto";
         is_dragging_drag = false;
     }
-    if(e.button == "0"){
-        if(ruler_tool_on == true){
+    if(e.button == "0"){        // finalize marquee selection if active
+        if(is_multi_select == true){
+            is_multi_select = false;
+            var x1 = Math.min(multi_select_start_x,multi_select_end_x);
+            var x2 = Math.max(multi_select_start_x,multi_select_end_x);
+            var y1 = Math.min(multi_select_start_y,multi_select_end_y);
+            var y2 = Math.max(multi_select_start_y,multi_select_end_y);
+            var sel = [];
+            for(var i=0;i<render_queue.length;i++){
+                var el = render_queue[i];
+                if(!el || !el.bbox) continue;
+                var bx = el.bbox.x;
+                var by = el.bbox.y;
+                var bw = el.bbox.width * (el.scalee || 1);
+                var bh = el.bbox.height * (el.scalen || 1);
+                if((bx < x2) && (bx + bw > x1) && (by < y2) && (by + bh > y1)){
+                    sel.push(i);
+                }
+            }
+            if(sel.length > 0){
+                selected_indices = sel;
+                is_selected = true;
+                queue_pos = selected_indices[0];
+            }else{
+                clear_selection();
+            }
+            render();
+            return;
+        }        if(ruler_tool_on == true){
             is_ruler_down = false;
             reset_ruler();
         }else if(draw_tool_freehand == true && is_pen_down == true){
@@ -208,12 +235,27 @@ function mouse_down(e){
                     start_select_x = cords[0]/scale;
                     start_select_y = cords[1]/scale;
                     queue_pos = temp_selected_element[1];
-                    is_selected = true;
-                    is_select_move = true;
+                    // If clicked element is already part of a multi-selection, keep the selection
+                    if(selected_indices && selected_indices.length > 0 && selected_indices.indexOf(queue_pos) !== -1){
+                        is_selected = true;
+                        is_select_move = true;
+                    }else{
+                        // single selection replace previous selection
+                        selected_indices = [queue_pos];
+                        is_selected = true;
+                        is_select_move = true;
+                    }
                     render();
                 }
             }else{
-                reset_selection();
+                // Start marquee multi-select
+                clear_selection();
+                is_multi_select = true;
+                var pos = get_cords(e);
+                multi_select_start_x = pos[0]/scale;
+                multi_select_start_y = pos[1]/scale;
+                multi_select_end_x = multi_select_start_x;
+                multi_select_end_y = multi_select_start_y;
                 render();
             }
         }
@@ -240,6 +282,15 @@ function mouse_move(e){
         //clear_canvas_ruler();
         //ruler_draw();
         render();
+    }
+    // marquee multi-select drag
+    if(is_multi_select == true){
+        var pos = get_cords(e);
+        var scale = grid_scale/init_scale;
+        multi_select_end_x = pos[0]/scale;
+        multi_select_end_y = pos[1]/scale;
+        render();
+        return;
     }
     if (is_pen_down == true && draw_tool_freehand == true){
         var pos = get_cords(e);
@@ -273,17 +324,31 @@ function mouse_move(e){
     if(pointer_tool_on == true && is_selected == true && is_select_move == true){
         var pos = get_cords(e);
         var scale = grid_scale/init_scale;
-        var temp_element = JSON.parse(JSON.stringify(render_queue[queue_pos]));
         var tempx = (pos[0]/scale) -start_select_x;
         var tempy = (pos[1]/scale) -start_select_y;
         start_select_x = pos[0]/scale;
         start_select_y = pos[1]/scale;
-        temp_element.x += tempx;
-        temp_element.y += tempy;
-        temp_element.bbox.x +=tempx;
-        temp_element.bbox.y +=tempy;
-        //temp_element.bbox = tempbbox;
-        render_queue[queue_pos] = temp_element;
+        // If multiple indices are selected, move them all
+        if(selected_indices && selected_indices.length > 1){
+            for(var si=0;si<selected_indices.length;si++){
+                var idx = selected_indices[si];
+                var temp_element = JSON.parse(JSON.stringify(render_queue[idx]));
+                temp_element.x += tempx;
+                temp_element.y += tempy;
+                if(temp_element.bbox){
+                    temp_element.bbox.x += tempx;
+                    temp_element.bbox.y += tempy;
+                }
+                render_queue[idx] = temp_element;
+            }
+        }else{
+            var temp_element = JSON.parse(JSON.stringify(render_queue[queue_pos]));
+            temp_element.x += tempx;
+            temp_element.y += tempy;
+            temp_element.bbox.x +=tempx;
+            temp_element.bbox.y +=tempy;
+            render_queue[queue_pos] = temp_element;
+        }
         render();
         send_board_update();
     }else if(pointer_tool_on == true && is_selected == true && selected_rotate == true){
@@ -672,9 +737,17 @@ function canvas_keydown(e){
     var key_which_is_down = e.keyCode;
     //console.log(key_which_is_down);
     if(is_selected == true && key_which_is_down == "8" ){
-        remove_element_from_queue(queue_pos);
+        if(selected_indices && selected_indices.length > 1){
+            var toRemove = selected_indices.slice().sort(function(a,b){return b-a});
+            for(var ri=0;ri<toRemove.length;ri++){
+                remove_element_from_queue(toRemove[ri]);
+            }
+        }else{
+            remove_element_from_queue(queue_pos);
+        }
         reset_selection();
         render();
+        try{ send_board_update(); }catch(e){}
     }
     if(e.key == "c" && e.ctrlKey == true){
         if(is_selected == true){
@@ -829,4 +902,30 @@ function render(){
     render_poly(poly_json_template,ctx);
     ruler_draw();
     //select_canvas_element();
+    // draw marquee or group bbox overlays
+    var scale = grid_scale/init_scale;
+    if(is_multi_select == true){
+        var sx = Math.min(multi_select_start_x, multi_select_end_x);
+        var sy = Math.min(multi_select_start_y, multi_select_end_y);
+        var sw = Math.abs(multi_select_end_x - multi_select_start_x);
+        var sh = Math.abs(multi_select_end_y - multi_select_start_y);
+        ctx.save();
+        ctx.setLineDash([6,4]);
+        ctx.strokeStyle = '#00ccff';
+        ctx.lineWidth = 2 * scale;
+        ctx.strokeRect(sx*scale, sy*scale, sw*scale, sh*scale);
+        ctx.setLineDash([]);
+        ctx.restore();
+    }else if(selected_indices && selected_indices.length > 0){
+        var gb = compute_group_bbox(selected_indices);
+        if(gb){
+            ctx.save();
+            ctx.setLineDash([6,4]);
+            ctx.strokeStyle = '#00ccff';
+            ctx.lineWidth = 2 * scale;
+            ctx.strokeRect(gb.x*scale, gb.y*scale, gb.width*scale, gb.height*scale);
+            ctx.setLineDash([]);
+            ctx.restore();
+        }
+    }
 }
