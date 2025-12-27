@@ -1,14 +1,12 @@
 #canvas-wrapper{
     margin: 0;
     display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    width: calc(100% - var(--right-width));
-    background-color: transparent;
-    min-height: 100vh;
-    padding: 40px;
-    box-sizing: border-box;
-    overflow: auto;
+    top: 0px;
+    left: 0px;
+    width: calc(100% - 336px);
+    background-color: darkgray;
+    height: 100%;
+    overflow: scroll;
 }
 #canvas-holder{
     position: relative;
@@ -17,17 +15,13 @@
     margin-bottom: auto;
 }
 #canvas_id{
-    margin: 0;
+    margin: 100px;
     position: relative;
     top: 0;
     left: 0;
     z-index: 100;
-    background-color: #ffffff;
-    border: 2px solid rgba(0,0,0,0.12);
-    border-radius: 6px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.5);
-    max-width: calc(100vw - var(--right-width) - 80px);
-    max-height: calc(100vh - 80px);
+    background-color: white;
+    border: solid black  4px;
 }
 #canvas_id:focus{
     outline: none;
