@@ -1,4 +1,8 @@
-export function rollGrab(input){ //function to grab the values for rolling dice
+const { removeWhiteSpace, check_is_char } = require("./parsing_utils.js");
+const { quicksort } = require("./sort_scripts.js");
+const psuedo_random = require("./psuedo_random.js");
+
+function rollGrab(input){ //function to grab the values for rolling dice
   try{
     var parsed_input = removeWhiteSpace(input);
     if(parsed_input.length <= 1){
@@ -6,8 +10,6 @@ export function rollGrab(input){ //function to grab the values for rolling dice
     }
     var reading = parsed_input.slice(1);
     reading = reading.join('');
-    //console.log(parsed_input);
-    //console.log(reading);
     var sum_comp =[];
     var temp_str = "";
     var type = "";
@@ -25,7 +27,6 @@ export function rollGrab(input){ //function to grab the values for rolling dice
           continue;
         }
         temp_str += cur_char;
-        //console.log(temp_str);
         var cur_is_alpha = (check_is_char(cur_char));
         var check = isNaN(Number(temp_str));
         if (cur_char === "\n"){
@@ -38,7 +39,6 @@ export function rollGrab(input){ //function to grab the values for rolling dice
         }else if((cur_char != "d")&&(check == true)&&((isNaN(Number(cur_char)))=== true)){
           return("error");
         }
-        //console.log(temp_str);
         if(i == (reading.length)-1){
           sum_comp.push({type:type,value:temp_str});
         }
@@ -47,14 +47,13 @@ export function rollGrab(input){ //function to grab the values for rolling dice
       }
 
     }
-    //console.log(sum_comp);
     return(clean_dice(sum_comp));
   }catch(e){
     return("error");
   }
 }
 /////// Cleans the parsed dice
-export function clean_dice(sum_comp){
+function clean_dice(sum_comp){
   try{
     var final_array = [];
     for(i = 0;i<(sum_comp.length);i++){
@@ -68,13 +67,12 @@ export function clean_dice(sum_comp){
         final_array.push(sum_comp[i]);
       }
     }
-    //console.log(final_array);
     return(final_array);
   }catch(e){
     return("error");
   }
 }
-export function run_dice(dice){
+function run_dice(dice){
   try{
     if(dice.type != "dice"){
       return("error");
@@ -146,21 +144,20 @@ export function run_dice(dice){
     for(i=0;i<num;i++){
       dice_rolls.push(((psuedo_random.LCG())%size)+1);
     }
-    var sorted_rolls = sort_scripts.quicksort(dice_rolls);
+    var sorted_rolls = quicksort(dice_rolls);
     var sum_array = sorted_rolls.slice(drop,(sorted_rolls.length));
     var drop_array = sorted_rolls.slice(0,drop);
     var sumofdice = 0;
     for(i = 0;i<(sum_array.length);i++){
       sumofdice += sum_array[i];
     }
-    //return(sumofdice);
     return({value:sumofdice,rolls:sum_array,drop:drop_array,sizedice:size,type:"dice"});
   }catch(e){
     return("error");
   }
 }
 ////////////////// Generates the random dice
-export function SumDice(item){ //function to generate random bumbers
+function SumDice(item){ //function to generate random bumbers
   try{
     items = rollGrab(item);
     var sumall =0;
@@ -190,5 +187,6 @@ export function SumDice(item){ //function to generate random bumbers
   }catch(e){
     return("error");
   }
-  
 }
+
+module.exports = { rollGrab, clean_dice, run_dice, SumDice };

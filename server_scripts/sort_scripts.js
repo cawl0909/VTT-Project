@@ -1,5 +1,5 @@
 // QUICK SORT
-export function quicksort(items){
+function quicksort(items){
   if((items.length)<=1){
     return(items);
   }
@@ -24,3 +24,5 @@ export function quicksort(items){
   var right = quicksort((items.slice((pointer1+1),(items.length))));
   return(left.concat([items[pointer1]],right));
 }
+
+module.exports = { quicksort };
