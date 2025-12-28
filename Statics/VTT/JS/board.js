@@ -861,6 +861,8 @@ function render_queue_execute(){
         return;
     }
     for(l=0;l<(render_queue.length);l++){
+        if(!render_queue[l]) continue;
+        if(render_queue[l].hidden) continue;
         var temp_type = (render_queue[l]).type;
         //console.log(temp_type);
         switch(temp_type){
@@ -893,6 +895,109 @@ function render_queue_execute(){
         render_bbox(render_queue[queue_pos]);
     }
 }
+
+// --- Layers panel functions ---
+function initLayersPanel(){
+    var btn = document.getElementById('layers-toggle-btn');
+    var list = document.getElementById('layers-list');
+    if(!btn || !list) return;
+    btn.addEventListener('click', function(){
+        var panel = document.getElementById('layers-panel');
+        panel.classList.toggle('collapsed');
+        btn.textContent = panel.classList.contains('collapsed') ? '▸' : '▾';
+    });
+    list.addEventListener('click', function(e){
+        var item = e.target.closest('.layer-item');
+        if(!item) return;
+        var idx = Number(item.dataset.index);
+        if(e.target && e.target.dataset && e.target.dataset.action){
+            var action = e.target.dataset.action;
+            if(action === 'toggle-vis'){
+                toggleLayerVisibility(idx);
+                return;
+            }else if(action === 'move-up'){
+                moveLayerUp(idx);
+                return;
+            }else if(action === 'move-down'){
+                moveLayerDown(idx);
+                return;
+            }else if(action === 'delete'){
+                deleteLayer(idx);
+                return;
+            }
+        }
+        // select
+        queue_pos = idx;
+        selected_indices = [idx];
+        is_selected = true;
+        render();
+    });
+    updateLayersPanel();
+}
+
+function updateLayersPanel(){
+    var list = document.getElementById('layers-list');
+    if(!list) return;
+    list.innerHTML = '';
+    for(var i=render_queue.length-1;i>=0;i--){
+        var el = render_queue[i];
+        var item = document.createElement('div');
+        item.className = 'layer-item';
+        if(selected_indices && selected_indices.indexOf(i)!==-1) item.classList.add('selected');
+        item.dataset.index = i;
+        var name = (el && el.type) ? el.type : 'layer';
+        var idtxt = (el && el.id) ? (' - ' + String(el.id)) : '';
+        item.innerHTML = '<div class="left"><span class="handle">☰</span><span class="name">'+name+idtxt+'</span></div>' +
+            '<div class="controls">' +
+            '<button data-action="toggle-vis" title="toggle visibility">'+(el && el.hidden ? '🙈' : '👁')+'</button>' +
+            '<button data-action="move-up" title="move up">▲</button>' +
+            '<button data-action="move-down" title="move down">▼</button>' +
+            '<button data-action="delete" title="delete">✖</button>' +
+            '</div>';
+        list.appendChild(item);
+    }
+}
+
+function toggleLayerVisibility(idx){
+    if(render_queue[idx]){
+        render_queue[idx].hidden = !render_queue[idx].hidden;
+        render();
+        try{ send_board_update(); }catch(e){}
+        updateLayersPanel();
+    }
+}
+
+function moveLayerUp(idx){
+    if(idx < render_queue.length -1){
+        var t = render_queue[idx+1];
+        render_queue[idx+1] = render_queue[idx];
+        render_queue[idx] = t;
+        render();
+        try{ send_board_update(); }catch(e){}
+        updateLayersPanel();
+    }
+}
+
+function moveLayerDown(idx){
+    if(idx > 0){
+        var t = render_queue[idx-1];
+        render_queue[idx-1] = render_queue[idx];
+        render_queue[idx] = t;
+        render();
+        try{ send_board_update(); }catch(e){}
+        updateLayersPanel();
+    }
+}
+
+function deleteLayer(idx){
+    if(!render_queue[idx]) return;
+    render_queue.splice(idx,1);
+    clear_selection();
+    render();
+    try{ send_board_update(); }catch(e){}
+    updateLayersPanel();
+}
+
 function render(){
     generateGrid();
     render_queue_execute();
@@ -928,4 +1033,5 @@ function render(){
             ctx.restore();
         }
     }
+    try{ if(typeof updateLayersPanel !== 'undefined') updateLayersPanel(); }catch(e){}
 }

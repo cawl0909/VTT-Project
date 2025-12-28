@@ -467,6 +467,7 @@ function add_to_render_queue(inputele){
     temp_json_to_add_to_queue.id = rand_id;
     render_queue.push(temp_json_to_add_to_queue);
     try{ send_board_update(); }catch(e){}
+    try{ if(typeof updateLayersPanel !== 'undefined') updateLayersPanel(); }catch(e){}
 } 
 ///Create bounding box 
 function create_bounding_box(bbox_input){
