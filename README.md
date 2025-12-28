@@ -1,7 +1,7 @@
 # Velurin — VTT (Virtual Tabletop)
 
 **Quick summary** 
-A lightweight VTT built with Node.js + Express and Socket.io. The server serves static web assets (canvas-based board UI) and handles real-time chat and board synchronization across connected clients.
+A lightweight VTT built with Node.js + Express and Socket.io. The server serves static web assets (canvas-based board UI) and handles real-time chat and board synchronization across connected clients. Currently deployed on a free render [site](https://velurian-vtt-proj.onrender.com/). The deployed site doesn't support some features becuase of the free server grade like image uploading, though these can be tested from a localhost.
 
 ---
 
@@ -17,22 +17,17 @@ A lightweight VTT built with Node.js + Express and Socket.io. The server serves 
    npm start
    ```
 3. Open the board in a browser:
-   - http://localhost:3000/ or `/main` (served from `Statics/VTT/main.html`)
-
-> Note: By default the app uses port 3000. To change it, update `server.js` or set your env var (the current code uses `3000` by default).
+   - http://localhost:3000/ 
 
 
-## Real-time contract (socket events) 🔁
-- Client -> Server
-  - `csm` : chat message (raw text)
-  - `board_update` : full `render_queue` payload representing board state
-  - `request_board` : ask server for current board state (sent on connect)
-- Server -> Client
-  - `scm` : broadcasted chat messages (stringified JSON)
-  - `server` : control messages (e.g., `toolong`, `roll` results)
-  - `board_update` : broadcasted full board state
+## Features
+- Custom canvas object manipulation and selection.
+- Chat and dice commands with command parser.
+- Image uploading
+- Layer controls and management.
 
-## Suggested next improvements 💡
+
+## Next Steps
 - Add persistence (e.g., save board to a DB or disk snapshot).
 - Implement diff-based updates or throttling for freehand/dragging updates.
 - Add authentication/permissions for multi-user control of elements.
