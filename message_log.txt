@@ -7,3 +7,22 @@
 [23:30:57][27/12/2025][ROOM-main][IP-undefined]: -- hi
 [23:31:0][27/12/2025][ROOM-main][IP-undefined]: -- my name is awwab
 [23:34:4][27/12/2025][ROOM-main][IP-undefined]: -- aSDASD
+[17:50:47][28/12/2025][ROOM-main][IP-undefined]: -- hello hello hello
+[18:6:47][28/12/2025][ROOM-main][IP-undefined]: -- /r 4d6d1
+[18:6:54][28/12/2025][ROOM-main][IP-undefined]: -- /r 12d3+3
+[18:7:0][28/12/2025][ROOM-main][IP-undefined]: -- /help
+[18:7:3][28/12/2025][ROOM-main][IP-undefined]: -- /h
+[18:8:32][28/12/2025][ROOM-main][IP-undefined]: -- /r 4d6d1
+[18:8:34][28/12/2025][ROOM-main][IP-undefined]: -- lol
+[18:8:36][28/12/2025][ROOM-main][IP-undefined]: -- hello
+[18:8:37][28/12/2025][ROOM-main][IP-undefined]: -- init
+[18:15:18][28/12/2025][ROOM-main][IP-undefined]: -- /r 4d6d1
+[18:16:21][28/12/2025][ROOM-main][IP-undefined]: -- /r 4d6d1
+[18:16:28][28/12/2025][ROOM-main][IP-undefined]: -- /r 4d6d
+[18:16:33][28/12/2025][ROOM-main][IP-undefined]: -- /r 4d6d1
+[18:17:3][28/12/2025][ROOM-main][IP-undefined]: -- /r 4d6d1
+[18:17:35][28/12/2025][ROOM-main][IP-undefined]: -- /r 3d6
+[18:17:46][28/12/2025][ROOM-main][IP-undefined]: -- /r 3d6
+[18:17:54][28/12/2025][ROOM-main][IP-undefined]: -- /r 3d6
+[18:18:32][28/12/2025][ROOM-main][IP-undefined]: -- /r 3d7
+[18:19:0][28/12/2025][ROOM-main][IP-undefined]: -- /r d20+1

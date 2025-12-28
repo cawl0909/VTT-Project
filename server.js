@@ -1,16 +1,28 @@
 const express = require('express'); //imports express
-const app = express(); //creates express instance called app
 const fs = require('fs');        //initilaisng and importing Node.JS libraries //imports file handling
 const http = require('http'); //imports http server
-const server = http.createServer(app); //creates http server with express
 const { Server } = require("socket.io"); //imports socketio
+const sort_scripts = require("./server_scripts/sort_scripts")
+const psuedo_random = require("./server_scripts/psuedo_random")
+
+
+// 
+
+
+
+//server init
+const app = express(); //creates express instance called app
+const server = http.createServer(app); //creates http server with express
 const io = new Server(server); //creates socket.io server within main server
+
+
 // Per-room board state map (roomName -> render_queue array)
 var board_states = {};
 function getRoom(socket){ return socket.room || 'main'; }
 const port1 = process.env.PORT || 3000; // Specify a port that the server listens on
 const formidable = require('formidable');///formidable package
-const cookie_parser = require("cookie-parser"); ///cookie parser package
+const { sort } = require('mathjs');
+
 ////////////////////////////////////////////////////////
 ////////////////////////////////////////////////
 app.use(express.static(__dirname+"/node_modules/mathjs/lib/browser/"));
@@ -149,54 +161,6 @@ io.on('connection', (socket) => { //handles socket communcation with clients
 server.listen(port1,() =>{   //sets the the server listens on the port1 port
     console.log("Listening on:" + port1); //Once the server starts listening it outputs the port onto the console
 });
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////// QUICK SORT
-function quicksort(items){
-  if((items.length)<=1){
-    return(items);
-  }
-  var pointer1 = 0;
-  var pointer2 = (items.length -1);
-  while(pointer1 != pointer2){
-    if(((items[pointer1]>items[pointer2])&&(pointer1<pointer2)) || (((items[pointer2])>items[pointer1]) && (pointer2<pointer1))){
-      var temp = items[pointer1];
-      items[pointer1] = items[pointer2];
-      items[pointer2] = temp;
-      var temp2 = pointer1;
-      pointer1 = pointer2;
-      pointer2 = temp2;
-    }
-    if (pointer1<pointer2){
-      pointer1+=1;
-    }else{
-      pointer1-=1;
-    }
-  }
-  var left = quicksort((items.slice(0,pointer1)));
-  var right = quicksort((items.slice((pointer1+1),(items.length))));
-  return(left.concat([items[pointer1]],right));
-}
-//////////////////////////////////////////////////BBL SORT
-function bblSort(toBeSorted){ //bubble sort
-  var swapped = true;
-  var pass = 0;  //intial paramters, pass is extra param to limit computation
-  // every bubble iteration send largest to the top as a result the number of 
-  //computations 
-  var len = toBeSorted.length;
-  while ((swapped == true)){
-      swapped = false;
-      for( var i = 0; i<((len)-1-pass);i++){
-          if ((toBeSorted[i]) > toBeSorted[i+1]){
-              var temp = toBeSorted[i]
-              toBeSorted[i] = toBeSorted[i+1]
-              toBeSorted[i+1] = temp;
-              swapped = true;
-          }
-      }
-      pass+=1;
-  }
-  return(toBeSorted);
-}
 ///// Check is a char
 function check_is_char(e){
   return( /^[A-Za-z]{1,1}$/.test(e));
@@ -211,7 +175,7 @@ function removeWhiteSpace(toRemove){ //gets the string whos whitespace needs to 
           listof.push(i);
       }
   }
-  quicksort(listof); //bubble sorts the list of the posotions
+  sort_scripts.quicksort(listof); 
   for (var i = listof.length -1;i>-1;i--){ //goes from top to bottom of temp list
     //splices the split list at their locations descending 
       breakdown.splice(listof[i],1);
@@ -413,9 +377,9 @@ function run_dice(dice){
     }
     var dice_rolls = []
     for(i=0;i<num;i++){
-      dice_rolls.push(((LCG())%size)+1);
+      dice_rolls.push(((psuedo_random.LCG())%size)+1);
     }
-    var sorted_rolls = quicksort(dice_rolls);
+    var sorted_rolls = sort_scripts.quicksort(dice_rolls);
     var sum_array = sorted_rolls.slice(drop,(sorted_rolls.length));
     var drop_array = sorted_rolls.slice(0,drop);
     var sumofdice = 0;
@@ -460,16 +424,6 @@ function  SumDice(item){ //function to generate random bumbers
     return("error");
   }
   
-}
-function LCG(){  //Psuedorandom number generator using a C++ minstd_rand0 standard.
-    const modul = (2147483647); //holds intial paramters.
-    const multiplier = 48271;
-    const increment = 0;
-    var seed = parseInt(fs.readFileSync('Seed.txt','utf-8')); //reads seed from .txt file
-    seed = (((multiplier*seed)+increment)%modul); //runs one pass of the formula
-    fs.writeFileSync('Seed.txt', (seed.toString()), function (err) { //writes the new seed to the seed file that persists 
-    });
-    return(seed); //returns the seed after one pass through the function
 }
 //////////////////////////////////////////////////////////////////////////////////////
 var tempoarray = [
