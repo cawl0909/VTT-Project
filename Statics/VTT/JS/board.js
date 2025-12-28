@@ -933,8 +933,12 @@ function initLayersPanel(){
         var item = e.target.closest('.layer-item');
         if(!item) return;
         var idx = Number(item.dataset.index);
-        if(e.target && e.target.dataset && e.target.dataset.action){
-            var action = e.target.dataset.action;
+        // Find the nearest control with a data-action attribute (handles clicks on SVG children)
+        var actionEl = e.target.closest('[data-action]');
+        if(actionEl && actionEl.dataset && actionEl.dataset.action){
+            var action = actionEl.dataset.action;
+            e.preventDefault();
+            e.stopPropagation();
             if(action === 'toggle-vis'){
                 toggleLayerVisibility(idx);
                 return;
@@ -949,7 +953,7 @@ function initLayersPanel(){
                 return;
             }
         }
-        // select
+        // If no control action, treat as selection
         queue_pos = idx;
         selected_indices = [idx];
         is_selected = true;
