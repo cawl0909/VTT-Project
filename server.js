@@ -1,16 +1,9 @@
 const express = require('express'); //imports express
-const { path } = require('express/lib/application');
-const { type } = require('express/lib/response');
 const app = express(); //creates express instance called app
 const fs = require('fs');        //initilaisng and importing Node.JS libraries //imports file handling
 const http = require('http'); //imports http server
-const { parse } = require('path');
-const { stringify } = require('querystring');
 const server = http.createServer(app); //creates http server with express
 const { Server } = require("socket.io"); //imports socketio
-const internal = require('stream');
-const { isNull } = require('util');
-const { isNumberObject } = require('util/types');
 const io = new Server(server); //creates socket.io server within main server
 // Per-room board state map (roomName -> render_queue array)
 var board_states = {};
