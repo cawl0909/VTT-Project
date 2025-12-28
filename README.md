@@ -28,7 +28,7 @@ A lightweight VTT built with Node.js + Express and Socket.io. The server serves 
 
 
 ## Next Steps
-- Add persistence (e.g., save board to a DB or disk snapshot).
+- Add persistence (e.g., save board to a DB or disk snapshot). To do this I will need to make a login system and manage multiple Socket rooms. 
 - Implement diff-based updates or throttling for freehand/dragging updates.
 - Add authentication/permissions for multi-user control of elements.
 
