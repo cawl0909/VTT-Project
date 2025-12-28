@@ -1,7 +1,7 @@
 # Velurin — VTT (Virtual Tabletop)
 
-**Quick summary** 
-A lightweight VTT built with Node.js + Express and Socket.io. The server serves static web assets (canvas-based board UI) and handles real-time chat and board synchronization across connected clients. Currently deployed on a free render [site](https://velurian-vtt-proj.onrender.com/). The deployed site doesn't support some features becuase of the free server grade like image uploading, though these can be tested from a localhost.
+# Summary
+A lightweight VTT built with Node.js + Express and Socket.io. The server serves static web assets (canvas-based board UI) and handles real-time chat and board synchronization across connected clients. Currently deployed on a free render.com server: [site](https://velurian-vtt-proj.onrender.com/). The deployed site doesn't support some features because of the free server grade like image uploading, though these can be tested from a localhost.
 
 ---
 
