@@ -979,8 +979,114 @@ function updateLayersPanel(){
             '<button data-action="move-down" title="move down">▼</button>' +
             '<button data-action="delete" title="delete">✖</button>' +
             '</div>';
+        // Insert preview thumbnail
+        try{
+            var left = item.querySelector('.left');
+            if(left){
+                var thumbEl;
+                if(el && el.type === 'img' && el.src){
+                    thumbEl = document.createElement('img');
+                    thumbEl.className = 'layer-thumb';
+                    thumbEl.src = el.src;
+                    thumbEl.alt = 'preview';
+                }else{
+                    thumbEl = document.createElement('canvas');
+                    thumbEl.className = 'layer-thumb';
+                    // fixed pixel size for crisp thumbnails
+                    thumbEl.width = 36;
+                    thumbEl.height = 36;
+                    renderLayerThumbnail(el, thumbEl);
+                }
+                // prepend thumbnail
+                left.insertBefore(thumbEl, left.firstChild);
+            }
+        }catch(e){}
         list.appendChild(item);
     }
+}
+
+// Render a small thumbnail preview for a given layer element
+function renderLayerThumbnail(el, canvas){
+    if(!el || !canvas) return;
+    var ctxThumb = canvas.getContext('2d');
+    if(!ctxThumb) return;
+    ctxThumb.clearRect(0,0,canvas.width,canvas.height);
+    var pad = 2; // inner padding
+    var bw = 0, bh = 0;
+    try{
+        // account for element scale in bbox sizing
+        bw = (el.bbox && el.bbox.width ? el.bbox.width : (el.width || 32)) * (el.scalee || 1);
+        bh = (el.bbox && el.bbox.height ? el.bbox.height : (el.height || 32)) * (el.scalen || 1);
+    }catch(e){ bw = 32; bh = 32; }
+    if(bw <= 0 || bh <= 0){ bw = 32; bh = 32; }
+    var fitScale = Math.min((canvas.width - pad*2)/bw, (canvas.height - pad*2)/bh);
+    // neutralize global drawing scale used by render_* helpers
+    var scaleFactor = 1;
+    try{ scaleFactor = (grid_scale / init_scale); }catch(e){ scaleFactor = 1; }
+    ctxThumb.save();
+    // move to padded area
+    ctxThumb.translate(pad, pad);
+    // neutralize global scale so 1 unit == 1px in thumbnail
+    if(scaleFactor && scaleFactor !== 1){
+        ctxThumb.scale(1/scaleFactor, 1/scaleFactor);
+    }
+    // scale element down to fit
+    ctxThumb.scale(fitScale, fitScale);
+    // Build a normalized clone that draws from origin
+    var clone = JSON.parse(JSON.stringify(el));
+    // normalize bbox to origin
+    if(!clone.bbox) clone.bbox = {x:0,y:0,width:bw,height:bh};
+    clone.bbox.x = 0; clone.bbox.y = 0; clone.bbox.width = bw; clone.bbox.height = bh;
+    // draw based on type
+    try{
+        switch(clone.type){
+            case 'rect':
+                clone.x = 0; clone.y = 0; clone.x1 = bw; clone.y1 = bh;
+                // scale stroke size down
+                if(clone.size) clone.size = Math.max(1, (clone.size));
+                render_rect(clone, ctxThumb);
+                break;
+            case 'ellipse':
+                clone.x = 0; clone.y = 0; clone.x1 = bw; clone.y1 = bh;
+                if(clone.size) clone.size = Math.max(1, (clone.size));
+                render_elipse(clone, ctxThumb);
+                break;
+            case 'poly':
+                clone.x = 0; clone.y = 0;
+                if(Array.isArray(clone.arrayofpoints)){
+                    // leave points as-is; fitScale handles downscaling
+                }
+                if(clone.size) clone.size = Math.max(1, (clone.size));
+                render_poly(clone, ctxThumb);
+                break;
+            case 'pen':
+                clone.x = 0; clone.y = 0;
+                if(Array.isArray(clone.pen_array)){
+                    // leave points as-is; fitScale handles downscaling
+                }
+                if(clone.pen_size) clone.pen_size = Math.max(1, (clone.pen_size));
+                render_pen(clone, ctxThumb);
+                break;
+            case 'text':
+                // baseline near bottom
+                clone.x = 0; clone.y = Math.max(12, bh - 2);
+                if(clone.size) clone.size = Math.max(10, clone.size);
+                render_text(clone, ctxThumb);
+                break;
+            case 'img':
+                // if we got here, image src may not be loaded – draw placeholder
+                ctxThumb.fillStyle = 'rgba(255,255,255,0.15)';
+                ctxThumb.fillRect(0, 0, bw, bh);
+                ctxThumb.strokeStyle = 'rgba(255,255,255,0.35)';
+                ctxThumb.strokeRect(0, 0, bw, bh);
+                break;
+            default:
+                // generic placeholder
+                ctxThumb.fillStyle = 'rgba(255,255,255,0.1)';
+                ctxThumb.fillRect(0, 0, Math.min(bw, canvas.width-pad*2), Math.min(bh, canvas.height-pad*2));
+        }
+    }catch(e){}
+    ctxThumb.restore();
 }
 
 function toggleLayerVisibility(idx){
