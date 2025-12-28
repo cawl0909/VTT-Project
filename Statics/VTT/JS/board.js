@@ -947,9 +947,11 @@ function updateLayersPanel(){
         item.dataset.index = i;
         var name = (el && el.type) ? el.type : 'layer';
         var idtxt = (el && el.id) ? (' - ' + String(el.id)) : '';
+        var eyeSVG = '<svg class="vis-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>';
+        var eyeSlashSVG = '<svg class="vis-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M2 2l20 20" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>';
         item.innerHTML = '<div class="left"><span class="handle">☰</span><span class="name">'+name+idtxt+'</span></div>' +
             '<div class="controls">' +
-            '<button data-action="toggle-vis" title="toggle visibility">'+(el && el.hidden ? '🙈' : '👁')+'</button>' +
+            '<button class="vis-btn'+(el && el.hidden ? ' hidden' : '')+'" data-action="toggle-vis" title="toggle visibility" aria-label="toggle visibility">'+(el && el.hidden ? eyeSlashSVG : eyeSVG) +'</button>' +
             '<button data-action="move-up" title="move up">▲</button>' +
             '<button data-action="move-down" title="move down">▼</button>' +
             '<button data-action="delete" title="delete">✖</button>' +

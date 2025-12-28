@@ -324,6 +324,24 @@ body{
     color: whitesmoke;
     cursor:pointer;
     margin-left:6px;
+    padding:4px;
+}
+.layer-item .controls .vis-btn{
+    padding:4px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    color: whitesmoke;
+}
+.layer-item .controls .vis-btn .vis-icon{
+    width:18px;
+    height:18px;
+    display:block;
+    stroke: currentColor;
+    fill: none;
+}
+.layer-item .controls .vis-btn.hidden{
+    color: rgba(255,255,255,0.55);
 }
 #layers-panel.collapsed .layers-list{ display:none; }
 #layers-panel.collapsed .layers-header{ border-bottom:none; }
