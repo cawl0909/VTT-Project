@@ -15,6 +15,24 @@ function send_board_update(){
         }catch(e){}
     }
 }
+/// Movement-batching to avoid jitter: record moved indices during interaction and send once on mouseup
+var _movement_pending = false;
+var _moved_indices = [];
+function markMoved(idx){
+    _movement_pending = true;
+    if(Array.isArray(idx)){
+        idx.forEach(function(i){ if(_moved_indices.indexOf(i) === -1) _moved_indices.push(i); });
+    }else if(typeof idx !== 'undefined' && idx !== null){
+        if(_moved_indices.indexOf(idx) === -1) _moved_indices.push(idx);
+    }
+}
+function flushMovementUpdates(){
+    if(!_movement_pending) return;
+    // send a single final board update for the movement we just completed
+    try{ send_board_update(); }catch(e){}
+    _movement_pending = false;
+    _moved_indices = [];
+}
 ///canvas clearer
 function clear_canvas(){
     ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
@@ -101,6 +119,7 @@ function no_longer_down(e){
             select_br = false;
             select_bl = false;
             render();
+            flushMovementUpdates();
         }
     }
 }
@@ -350,7 +369,11 @@ function mouse_move(e){
             render_queue[queue_pos] = temp_element;
         }
         render();
-        send_board_update();
+        if(is_select_move == true){
+            markMoved(selected_indices);
+        }else{
+            markMoved(queue_pos);
+        }
     }else if(pointer_tool_on == true && is_selected == true && selected_rotate == true){
         var pos = get_cords(e);
         var scale = grid_scale/init_scale;
@@ -363,7 +386,7 @@ function mouse_move(e){
         temp_element.angle = tempangle;
         render_queue[queue_pos] = temp_element;
         render();
-        send_board_update();
+        markMoved(queue_pos);
     }else if(pointer_tool_on == true && is_selected == true && select_east == true){
         var pos = get_cords(e);
         var scale = grid_scale/init_scale;
@@ -395,7 +418,7 @@ function mouse_move(e){
         }
         render_queue[queue_pos] = temp_element;
         render();
-        send_board_update();
+        markMoved(queue_pos);
     }else if(pointer_tool_on == true && is_selected == true && select_west == true){
         var pos = get_cords(e);
         var scale = grid_scale/init_scale;
@@ -425,7 +448,7 @@ function mouse_move(e){
         }
         render_queue[queue_pos] = temp_element;
         render();
-        send_board_update();
+        markMoved(queue_pos);
     }else if(pointer_tool_on == true && is_selected == true && select_south == true){
         var pos = get_cords(e);
         var scale = grid_scale/init_scale;
@@ -459,7 +482,7 @@ function mouse_move(e){
         //console.log(tempscale);
         render_queue[queue_pos] = temp_element;
         render();
-        send_board_update();
+        markMoved(queue_pos);
     }else if(pointer_tool_on == true && is_selected == true && select_north == true){
         var pos = get_cords(e);
         var scale = grid_scale/init_scale;
@@ -490,7 +513,7 @@ function mouse_move(e){
         }
         render_queue[queue_pos] = temp_element;
         render();
-        send_board_update()
+        markMoved(queue_pos)
     }else if(pointer_tool_on == true && is_selected == true && select_tl == true){
         var pos = get_cords(e);
         var scale = grid_scale/init_scale;
@@ -553,7 +576,7 @@ function mouse_move(e){
         //console.log(finalcomp);
         render_queue[queue_pos] = temp_element;
         render();
-        send_board_update();
+        markMoved(queue_pos);
     }else if(pointer_tool_on == true && is_selected == true && select_br == true){
         var pos = get_cords(e);
         var scale = grid_scale/init_scale;
@@ -611,7 +634,7 @@ function mouse_move(e){
         }
         render_queue[queue_pos] = temp_element;
         render();
-        send_board_update();
+        markMoved(queue_pos);
     }else if(pointer_tool_on == true && is_selected == true && select_tr == true){
         var pos = get_cords(e);
         var scale = grid_scale/init_scale;
@@ -671,7 +694,7 @@ function mouse_move(e){
         }
         render_queue[queue_pos] = temp_element;
         render();
-        send_board_update();
+        markMoved(queue_pos);
     }else if(pointer_tool_on == true && is_selected == true && select_bl == true){
         var pos = get_cords(e);
         var scale = grid_scale/init_scale;
@@ -730,7 +753,7 @@ function mouse_move(e){
         }
         render_queue[queue_pos] = temp_element;
         render();
-        send_board_update();
+        markMoved(queue_pos);
     }
 }
 function canvas_keydown(e){
