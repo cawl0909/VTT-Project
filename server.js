@@ -4,7 +4,7 @@ const http = require('http'); //imports http server
 const { Server } = require("socket.io"); //imports socketio
 const sort_scripts = require("./server_scripts/sort_scripts")
 const psuedo_random = require("./server_scripts/psuedo_random")
-
+const dice  = require("./server_scripts/dice")
 
 // 
 

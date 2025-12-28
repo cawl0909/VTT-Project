@@ -26,3 +26,12 @@
 [18:17:54][28/12/2025][ROOM-main][IP-undefined]: -- /r 3d6
 [18:18:32][28/12/2025][ROOM-main][IP-undefined]: -- /r 3d7
 [18:19:0][28/12/2025][ROOM-main][IP-undefined]: -- /r d20+1
+[18:32:33][28/12/2025][ROOM-main][IP-undefined]: -- /r 3d6
+[18:32:38][28/12/2025][ROOM-main][IP-undefined]: -- /r 6 3d6d1
+[18:32:47][28/12/2025][ROOM-main][IP-undefined]: -- /r 36d1
+[18:32:50][28/12/2025][ROOM-main][IP-undefined]: -- /r 3d6d1
+[18:40:29][28/12/2025][ROOM-main][IP-undefined]: -- /r 3d6d1
+[19:0:50][28/12/2025][ROOM-main][IP-undefined]: -- /roll 3d6
+[19:1:15][28/12/2025][ROOM-main][IP-undefined]: -- /r 3d6
+[19:2:8][28/12/2025][ROOM-main][IP-undefined]: -- /r 3d6
+[19:4:17][28/12/2025][ROOM-main][IP-undefined]: -- /r 3d6
